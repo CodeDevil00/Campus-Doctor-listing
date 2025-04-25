@@ -39,11 +39,18 @@ export default function AutoComplete({ allDoctors, onSearch }) {
             <li
               key={idx}
               data-testid="suggestion-item"
-              className="px-4 py-3 hover:bg-blue-100 cursor-pointer transition duration-200"
+              className="px-4 py-3 hover:bg-blue-100 cursor-pointer transition duration-200 flex items-center gap-4"
               onClick={() => handleSelect(sug.name)}
             >
-              {sug.name}
-              <span className="text-sm text-gray-500"> - {sug.specialities.map(spec => spec.name).join(', ')}</span>
+              <img
+                src={sug.photo}
+                alt={sug.name}
+                className="w-12 h-12 object-cover rounded-full border-2 border-gray-300"
+              />
+              <div className="flex flex-col">
+                <span className="text-lg font-semibold text-gray-800">{sug.name}</span>
+                <span className="text-sm text-gray-500">{sug.specialities.map(spec => spec.name).join(', ')}</span>
+              </div>
             </li>
           ))}
         </ul>

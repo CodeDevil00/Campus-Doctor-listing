@@ -10,11 +10,10 @@ export default function DoctorList({ allDoctors, searchQuery, filters }) {
 
   // Mode of consultation filter (Video or In Clinic)
   if (filters.consultationType) {
-    console.log('Filtering by consultation type:', filters.consultationType); // Debug
     if (filters.consultationType === 'Video Consult') {
-      filtered = filtered.filter(doc => doc.video_consult === true); // Check if video_consult is true
+      filtered = filtered.filter(doc => doc.video_consult === true); 
     } else if (filters.consultationType === 'In Clinic') {
-      filtered = filtered.filter(doc => doc.in_clinic === true); // Check if in_clinic is true
+      filtered = filtered.filter(doc => doc.in_clinic === true); 
     }
   }
 
@@ -29,15 +28,15 @@ export default function DoctorList({ allDoctors, searchQuery, filters }) {
   // Sorting by fees or experience
   if (filters.sortBy === 'fees') {
     filtered.sort((a, b) => {
-      const feeA = parseFloat(a.fees.replace(/[^\d.-]/g, '')); // Remove currency symbols
-      const feeB = parseFloat(b.fees.replace(/[^\d.-]/g, '')); // Remove currency symbols
+      const feeA = parseFloat(a.fees.replace(/[^\d.-]/g, '')); 
+      const feeB = parseFloat(b.fees.replace(/[^\d.-]/g, '')); 
       return feeA - feeB;
     });
   } else if (filters.sortBy === 'experience') {
     filtered.sort((a, b) => {
-      const expA = parseInt(a.experience.split(' ')[0], 10); // Assuming experience is a string like '39 Years'
-      const expB = parseInt(b.experience.split(' ')[0], 10); // Same here
-      return expB - expA; // Sort in descending order
+      const expA = parseInt(a.experience.split(' ')[0], 10); 
+      const expB = parseInt(b.experience.split(' ')[0], 10); 
+      return expB - expA; 
     });
   }
 
