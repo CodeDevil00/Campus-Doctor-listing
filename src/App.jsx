@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchDoctors } from './utils/fetchDoctors';
-import AutocompleteSearch from './components/AutocompleteSearch';
 import FilterPanel from './components/FilterPanel';
 import DoctorList from './components/DoctorList';
+import AutocompleteSearch from './components/AutocompleteSearch';
 
 function App() {
   const [allDoctors, setAllDoctors] = useState([]);
@@ -14,11 +14,22 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6">
+    <div className="min-h-screen bg-gray-100 py-6 px-4">
       <h1 className="text-2xl font-bold text-center mb-6">Campus Assessment Doctor Listing</h1>
       <AutocompleteSearch allDoctors={allDoctors} onSearch={setSearchQuery} />
-      <FilterPanel allDoctors={allDoctors} onFilter={setFilters} />
-      <DoctorList allDoctors={allDoctors} searchQuery={searchQuery} filters={filters} />
+
+      {/* Container for the FilterPanel and DoctorList */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        {/* Filter Panel */}
+        <div className="md:col-span-1">
+          <FilterPanel allDoctors={allDoctors} onFilter={setFilters} />
+        </div>
+
+        {/* Doctor List */}
+        <div className="md:col-span-2">
+          <DoctorList allDoctors={allDoctors} searchQuery={searchQuery} filters={filters} />
+        </div>
+      </div>
     </div>
   );
 }

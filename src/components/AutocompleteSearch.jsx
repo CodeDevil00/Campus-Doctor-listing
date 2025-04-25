@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function AutocompleteSearch({ allDoctors, onSearch }) {
+export default function AutoComplete({ allDoctors, onSearch }) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -24,26 +24,30 @@ export default function AutocompleteSearch({ allDoctors, onSearch }) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-4">
+    <div className="relative w-full max-w-md mx-auto mt-6">
       <input
-        className="w-full border border-gray-300 rounded px-4 py-2 shadow-sm"
+        className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
         data-testid="autocomplete-input"
         value={query}
         onChange={handleInputChange}
         placeholder="Search doctor by name"
       />
-      <ul className="bg-white border rounded shadow-md mt-1">
-        {suggestions.map((sug, idx) => (
-          <li
-            key={idx}
-            data-testid="suggestion-item"
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={() => handleSelect(sug.name)}
-          >
-            {sug.name}
-          </li>
-        ))}
-      </ul>
+      {/* Suggestions list */}
+      {suggestions.length > 0 && (
+        <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
+          {suggestions.map((sug, idx) => (
+            <li
+              key={idx}
+              data-testid="suggestion-item"
+              className="px-4 py-3 hover:bg-blue-100 cursor-pointer transition duration-200"
+              onClick={() => handleSelect(sug.name)}
+            >
+              {sug.name}
+              <span className="text-sm text-gray-500"> - {sug.specialities.map(spec => spec.name).join(', ')}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

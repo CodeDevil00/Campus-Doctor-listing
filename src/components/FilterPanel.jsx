@@ -7,12 +7,13 @@ export default function FilterPanel({ allDoctors, onFilter }) {
   const [sortBy, setSortBy] = useState('');
 
   useEffect(() => {
-    const specialtySet = new Set();
-    allDoctors.forEach(doc => {
-      (doc.speciality || []).forEach(spec => specialtySet.add(spec));
-    });
-    
-    setSpecialties([...specialtySet]);
+    if (Array.isArray(allDoctors)) {
+      // Flatten all specialities and ensure uniqueness
+      const specialtySet = new Set(allDoctors.flatMap(doc => doc.specialities.map(spec => spec.name)));
+      setSpecialties([...specialtySet]);
+    } else {
+      console.warn('allDoctors is not an array or is undefined');
+    }
   }, [allDoctors]);
 
   useEffect(() => {
@@ -20,57 +21,73 @@ export default function FilterPanel({ allDoctors, onFilter }) {
   }, [consultationType, selectedSpecialties, sortBy]);
 
   return (
-    <div className="w-full max-w-md mx-auto mt-4 bg-white p-4 rounded shadow-md">
-      <h3 className="font-bold" data-testid="filter-header-moc">Mode of Consultation</h3>
-      <div className="flex gap-4 mt-2">
-        <label className="flex items-center gap-1">
-          <input
-            type="radio"
-            name="consult"
-            value="Video Consult"
-            data-testid="filter-video-consult"
-            onChange={() => setConsultationType('Video Consult')}
-          /> Video Consult
-        </label>
-        <label className="flex items-center gap-1">
-          <input
-            type="radio"
-            name="consult"
-            value="In Clinic"
-            data-testid="filter-in-clinic"
-            onChange={() => setConsultationType('In Clinic')}
-          /> In Clinic
-        </label>
-      </div>
-
-      <h3 className="font-bold mt-4" data-testid="filter-header-speciality">Specialties</h3>
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {specialties.map((spec, idx) => (
-          <label key={idx} className="flex items-center gap-1">
+    <div className="bg-white p-6 rounded-lg shadow-lg space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Mode of Consultation</h3>
+        <div className="space-y-2">
+          <label className="inline-flex items-center space-x-2">
             <input
-              type="checkbox"
-              data-testid={`filter-specialty-${spec}`}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedSpecialties([...selectedSpecialties, spec]);
-                } else {
-                  setSelectedSpecialties(selectedSpecialties.filter(s => s !== spec));
-                }
-              }}
-            /> {spec}
+              type="radio"
+              name="consult"
+              value="Video Consult"
+              data-testid="filter-video-consult"
+              className="form-radio text-blue-500"
+              onChange={() => setConsultationType('Video Consult')}
+            />
+            <span className="text-gray-700">Video Consult</span>
           </label>
-        ))}
+          <label className="inline-flex items-center space-x-2">
+            <input
+              type="radio"
+              name="consult"
+              value="In Clinic"
+              data-testid="filter-in-clinic"
+              className="form-radio text-blue-500"
+              onChange={() => setConsultationType('In Clinic')}
+            />
+            <span className="text-gray-700">In Clinic</span>
+          </label>
+        </div>
       </div>
 
-      <h3 className="font-bold mt-4" data-testid="filter-header-sort">Sort By</h3>
-      <select
-        className="w-full border px-2 py-1 mt-2 rounded"
-        onChange={(e) => setSortBy(e.target.value)}
-      >
-        <option value="">None</option>
-        <option value="fees">Fees</option>
-        <option value="experience">Experience</option>
-      </select>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Specialties</h3>
+        <div className="space-y-2">
+          {specialties.length > 0 ? (
+            specialties.map((spec, idx) => (
+              <label key={idx} className="inline-flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  data-testid={`filter-specialty-${spec}`}
+                  className="form-checkbox text-blue-500"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedSpecialties([...selectedSpecialties, spec]);
+                    } else {
+                      setSelectedSpecialties(selectedSpecialties.filter(s => s !== spec));
+                    }
+                  }}
+                />
+                <span className="text-gray-700">{spec}</span>
+              </label>
+            ))
+          ) : (
+            <p className="text-gray-600">No specialties available</p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Sort By</h3>
+        <select
+          onChange={(e) => setSortBy(e.target.value)}
+          className="block w-full bg-gray-50 border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">None</option>
+          <option value="fees">Fees</option>
+          <option value="experience">Experience</option>
+        </select>
+      </div>
     </div>
   );
 }
